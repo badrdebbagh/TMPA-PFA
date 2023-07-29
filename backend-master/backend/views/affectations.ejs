@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Affectations</title>
+</head>
+<body>
+  <h1>Affectations</h1>
+
+  <form action="localhost:3001/api/affectation" method="POST">
+    <label for="collaborateur">Collaborateur :</label>
+    <select name="collaborateurId" id="collaborateur">
+      <% collaborateurs.forEach(function(collaborateur) { %>
+        <option value="<%= collaborateur._id %>"><%= collaborateur.Nom %></option>
+      <% }); %>
+    </select>
+
+    <br>
+
+    <label for="vehicule">Véhicule :</label>
+    <select name="vehiculeId" id="vehicule">
+      <% vehicules.forEach(function(vehicule) { %>
+        <option value="<%= vehicule._id %>"><%= vehicule.Marque %> - <%= vehicule.WW %></option>
+      <% }); %>
+    </select>
+
+    <br>
+
+    <input type="submit" value="Affecter">
+  </form>
+</body>
+</html>
