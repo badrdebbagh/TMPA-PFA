@@ -369,24 +369,20 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function TableAffectation() {
-  const [affectationDetails, setAffectationDetails] = useState([]);
-
-  useEffect(() => {
-    getAffectationDetails();
-  }, [affectationDetails]); /*  */
+export default function TableArchivedAffectation() {
+  const [archivedaffectationDetails, setArchivedAffectationDetails] = useState([]);
 
   // Fonction pour récupérer les informations des affectations depuis le backend
-  const getAffectationDetails = async () => {
+  const getArchivedAffectationDetails = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/affectations1');
+      const response = await fetch('http://localhost:3001/api/archived-affectation');
       if (!response.ok) {
-        throw new Error('Une erreur est survenue lors de la récupération des détails des affectations');
+        throw new Error('Une erreur est survenue lors de la récupération des détails des affectations archivees ');
       }
       const data = await response.json();
-      setAffectationDetails(data);
+      setArchivedAffectationDetails(data);
       // Fetch the number of items from the database or any other source
-      const itemCount = affectationDetails.length; // Replace 'users' with your data source
+      const itemCount = archivedaffectationDetails.length; // Replace 'users' with your data source
 
       // Set the default rows per page based on the item count
       if (itemCount > 0) {
@@ -397,19 +393,22 @@ export default function TableAffectation() {
       console.error(error);
     }
   };
+  useEffect(() => {
+    getArchivedAffectationDetails();
+  }, []); /*  */
 
-  const OnDelete = (id) => {
-    if (window.confirm('are you sure to delete this user')) {
-      Axios.delete(`http://localhost:3001/api/deleteAffectation/${id}`).then((res) => {
-        console.log(res.data);
-        setMessage(res.data.message);
-        setShow(true);
-        setTimeout(() => {
-          setShow(false);
-        }, 4000);
-      });
-    }
-  };
+  // const OnDelete = (id) => {
+  //   if (window.confirm('are you sure to delete this user')) {
+  //     Axios.delete(`http://localhost:3001/api/deleteAffectation/${id}`).then((res) => {
+  //       console.log(res.data);
+  //       setMessage(res.data.message);
+  //       setShow(true);
+  //       setTimeout(() => {
+  //         setShow(false);
+  //       }, 4000);
+  //     });
+  //   }
+  // };
   function formatDate(dateString) {
     const date = new Date(dateString);
     const day = date.getDate();
@@ -438,7 +437,7 @@ export default function TableAffectation() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = collab.map((n) => n._id);
+      const newSelected = archivedaffectationDetails.map((n) => n._id);
       setSelected(newSelected);
       return;
     }
@@ -482,11 +481,11 @@ export default function TableAffectation() {
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(affectationDetails, getComparator(order, orderBy)).slice(
+      stableSort(archivedaffectationDetails, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage, affectationDetails]
+    [order, orderBy, page, rowsPerPage, archivedaffectationDetails]
   );
 
   return (
@@ -503,21 +502,21 @@ export default function TableAffectation() {
                 orderBy={orderBy}
                 onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
-                rowCount={affectationDetails.length}
+                rowCount={archivedaffectationDetails.length}
               />
               <TableBody>
-                {visibleRows.map((affectationDetails, index) => {
-                  const isItemSelected = isSelected(affectationDetails._id);
+                {visibleRows.map((archivedaffectationDetails, index) => {
+                  const isItemSelected = isSelected(archivedaffectationDetails._id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, affectationDetails._id)}
+                      onClick={(event) => handleClick(event, archivedaffectationDetails._id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={affectationDetails._id}
+                      key={archivedaffectationDetails._id}
                       selected={isItemSelected}
                       sx={{ cursor: 'pointer' }}
                     >
@@ -526,53 +525,53 @@ export default function TableAffectation() {
                           color="primary"
                           checked={isItemSelected}
                           inputProps={{
-                            'aria-labelledby': affectationDetails._id,
+                            'aria-labelledby': archivedaffectationDetails._id,
                           }}
                         />
                       </TableCell>
 
                       <TableCell
                         component="th"
-                        _id={affectationDetails._id}
+                        _id={archivedaffectationDetails._id}
                         scope="row"
                         padding="none"
-                      >{`${affectationDetails.collaborateurDetails[0].Nom}`}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].Prenom}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].Filiale}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].Direction}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].Matricule}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].Grade}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].Email}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].NumeroGsm}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].NumeroGsmPersonnel}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].TelephoneFixe}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].Permis}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].DateValiditePermis}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].CIN}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].DateValiditéCIN}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].NumeroPassport}</TableCell>
-                      <TableCell>{affectationDetails.collaborateurDetails[0].DateValiditéPassport}</TableCell>
+                      >{`${archivedaffectationDetails.collaborateurDetails[0].Nom}`}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].Prenom}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].Filiale}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].Direction}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].Matricule}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].Grade}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].Email}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].NumeroGsm}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].NumeroGsmPersonnel}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].TelephoneFixe}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].Permis}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].DateValiditePermis}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].CIN}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].DateValiditéCIN}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].NumeroPassport}</TableCell>
+                      <TableCell>{archivedaffectationDetails.collaborateurDetails[0].DateValiditéPassport}</TableCell>
 
-                      <TableCell>{affectationDetails.vehiculeDetails[0].Num_parc}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].WW}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].Num_Chassis}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].DM_Circulation}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].Pf}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].Num_Immat}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].Marque}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].Couleur}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].Prestataire}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].Font_Service}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].Ref_Pneus}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].Echeance_Aut_Circulation}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].Echaence_Visite_Tech}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].Assurance_Contrat_Cours}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].Cartes_Verte}</TableCell>
-                      <TableCell>{affectationDetails.vehiculeDetails[0].Vignete}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].Num_parc}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].WW}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].Num_Chassis}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].DM_Circulation}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].Pf}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].Num_Immat}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].Marque}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].Couleur}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].Prestataire}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].Font_Service}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].Ref_Pneus}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].Echeance_Aut_Circulation}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].Echaence_Visite_Tech}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].Assurance_Contrat_Cours}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].Cartes_Verte}</TableCell>
+                      <TableCell>{archivedaffectationDetails.vehiculeDetails[0].Vignete}</TableCell>
 
                       <TableCell align="right">
                         {' '}
-                        <Button endIcon={<DeleteIcon />} onClick={() => OnDelete(affectationDetails._id)}>
+                        <Button endIcon={<DeleteIcon />} onClick={() => OnDelete(archivedaffectationDetails._id)}>
                           Supprimer
                         </Button>
                       </TableCell>
@@ -594,7 +593,7 @@ export default function TableAffectation() {
           <TablePagination
             rowsPerPageOptions={[10]}
             component="div"
-            count={affectationDetails.length}
+            count={archivedaffectationDetails.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

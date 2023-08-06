@@ -442,6 +442,7 @@ export default function EnhancedTable() {
                       <TableCell align="right">{infractions.lieuInfraction}</TableCell>
                       <TableCell align="right">{infractions.excesDeVitesse}</TableCell>
                       <TableCell align="right">{infractions.vitesseEnregistree}</TableCell>
+                      <TableCell align="right">{infractions.vitesseAutorisee}</TableCell>
                       <TableCell align="right">{infractions.dateConstatation}</TableCell>
                       <TableCell align="right">{infractions.montantInfraction}</TableCell>
                       <TableCell align="right">{infractions.nombrePointsRetires}</TableCell>{' '}

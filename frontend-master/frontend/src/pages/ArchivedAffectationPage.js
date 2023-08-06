@@ -5,22 +5,22 @@
 import { Stack, Typography } from '@mui/material';
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import Affectation from 'src/sections/@dashboard/affectation/Affectation';
+import ArchivedAffectation from 'src/sections/@dashboard/archivedaffectation/ArchivedAffectation';
 
-export default function affectation() {
+export default function ArchivedAffectationPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Affectation </title>
+        <title> Dashboard: ArchivedAffectation </title>
       </Helmet>
 
       <Stack direction="row" alignItems="center" justifyContent="center" mb={5}>
         <Typography variant="h4" gutterBottom>
-          Affectation d'un vehicule a un collaborateur
+          Archived Affectation
         </Typography>
       </Stack>
 
-      <Affectation />
+      <ArchivedAffectation />
     </>
   );
 }

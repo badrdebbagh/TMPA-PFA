@@ -30,6 +30,8 @@ import AddInfraction from './pages/AddInfraction';
 import EditInfraction from './pages/EditInfraction';
 import ArchivedInfractionPage from './pages/ArchivedInfractionPage';
 
+import ArchivedAffectationPage from './pages/ArchivedAffectationPage';
+
 // ----------------------------------------------------------------------
 
 if (localStorage.jwt) {
@@ -178,6 +180,14 @@ export default function Router() {
           element: (
             <PrivateRouter user={user}>
               <AffectationPage />
+            </PrivateRouter>
+          ),
+        },
+        {
+          path: 'archived-affectation',
+          element: (
+            <PrivateRouter user={user}>
+              <ArchivedAffectationPage />
             </PrivateRouter>
           ),
         },
