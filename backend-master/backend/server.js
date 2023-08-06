@@ -55,14 +55,15 @@ app.get('/api/archived-vehicule', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 // selected columns vehicules
-const UserController = require('./controllers/UserController');
-const authMiddleware = require('./middlewares/authMiddleware');
-app.use(
-  '/api/vehicule/save-columns',
-  authMiddleware,
-  UserController.saveColumnsHandler
-);
+// const UserController = require('./controllers/UserController');
+// const authMiddleware = require('./middlewares/authMiddleware');
+// app.use(
+//   '/api/vehicule/save-columns',
+//   authMiddleware,
+//   UserController.saveColumnsHandler
+// );
 
 /* Infractions */
 const router6 = require('./Routes/InfractionRoutes');
