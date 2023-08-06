@@ -55,6 +55,14 @@ app.get('/api/archived-vehicule', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+// selected columns vehicules
+const UserController = require('./controllers/UserController');
+const authMiddleware = require('./middlewares/authMiddleware');
+app.use(
+  '/api/vehicule/save-columns',
+  authMiddleware,
+  UserController.saveColumnsHandler
+);
 
 /* Infractions */
 const router6 = require('./Routes/InfractionRoutes');
@@ -90,9 +98,25 @@ app.get('/api/archivedInfractions', async (req, res) => {
 const router4 = require('./Routes/AffectationRoutes');
 app.set('view engine', 'ejs');
 app.use('/api', router4);
+//import archived affectation MODEL
+const router8 = require('./Routes/ArchivedAffectationRoutes');
+const {
+  fetchArchivedAffectation,
+} = require('./controllers/ArchivedAffectationsController');
+app.use('/api', router8);
+app.get('/api/archived-affectation', async (req, res) => {
+  try {
+    const archivedaffectation = await fetchArchivedAffectation();
+    res.json(archivedaffectation);
+  } catch (error) {
+    console.error('Error fetching archived affectation:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 /* statistique */
 const router5 = require('./Routes/DashStatisRoute');
+
 app.use('/api', router5);
 
 /* passport */

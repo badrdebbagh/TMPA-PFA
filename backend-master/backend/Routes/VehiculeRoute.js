@@ -6,6 +6,7 @@ const {
   UpdateVehicule,
   DeleteVehicule,
 } = require('../controllers/VehiculeController');
+
 const router2 = express.Router();
 
 /* add vehicule */
@@ -22,6 +23,5 @@ router2.put('/vehicule/:id', UpdateVehicule); /*  */
 
 /* delete vehicule */
 router2.delete('/vehicule/:id', DeleteVehicule); /*  */
-/* download vehicule */
 
 module.exports = router2;

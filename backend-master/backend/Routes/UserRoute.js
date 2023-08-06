@@ -6,8 +6,10 @@ const {
   UpdateUser,
   DeleteUser,
   loginHandler,
-  saveColumnPreferences,
+  saveColumnsHandler,
 } = require('../controllers/UserController');
+const User = require('../models/Users');
+const authMiddleware = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 /* add user */
@@ -27,8 +29,7 @@ router.delete('/users/:id', DeleteUser);
 
 /* login  */
 router.post('/login', loginHandler);
-
-router.post('/save-columns', saveColumnPreferences);
+router.post('/users/save-columns', authMiddleware, saveColumnsHandler);
 
 module.exports = router;
 

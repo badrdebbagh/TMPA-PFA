@@ -1,4 +1,3 @@
-const UserModel = require('../models/Users');
 const Users = require('../models/Users');
 const ValidateUser = require('../Validation/UserValidation');
 const Validatelogin = require('../Validation/login');
@@ -8,8 +7,8 @@ const VehiculeModel = require('../models/Véhicule');
 const CollabModel = require('../models/Collaborateur');
 
 /* add work */
+const authMiddleware = require('../middlewares/authMiddleware');
 
-const ADMIN_USER_ID = '645d248a84b5d1e60dfb9fe1';
 const AddUser = async (req, res) => {
   const { errors, isValid } = ValidateUser(req.body);
   try {
@@ -46,29 +45,6 @@ const FindAllUsers = async (req, res) => {
   }
 };
 
-const saveColumnPreferences = async (req, res) => {
-  const userId = ADMIN_USER_ID;
-  const { selectedColumns } = req.body;
-
-  try {
-    // Find the user by ID
-    const user = await UserModel.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'Admin user not found' });
-    }
-
-    // Update the selectedColumns field with the new preferences
-    user.selectedColumns = selectedColumns;
-
-    // Save the user document
-    await user.save();
-
-    res.status(200).json({ message: 'Column preferences saved successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error saving column preferences' });
-  }
-};
 /* find one work */
 const FindSinglUser = async (req, res) => {
   try {
@@ -77,6 +53,38 @@ const FindSinglUser = async (req, res) => {
   } catch (error) {
     console.log(error.message);
   }
+};
+
+const saveColumnsHandler = (req, res) => {
+  console.log('Request Body:', req.body);
+  const userId = req.user.id;
+  console.log('User ID:', userId);
+
+  // Get the selectedColumns data from the request body
+  const { selectedColumns } = req.body;
+  console.log('Selected Columns:', selectedColumns);
+
+  // Update the user's record in the database with the new selectedColumns
+  Users.findByIdAndUpdate(userId, { selectedColumns }, { new: true })
+    .then((updatedUser) => {
+      if (!updatedUser) {
+        // User not found, handle the error
+        console.log('User not found');
+        return res.status(404).json({ error: 'User not found' });
+      }
+      // Return a success response
+      console.log('User updated successfully');
+      res
+        .status(200)
+        .json({ message: 'Selected columns updated successfully' });
+    })
+    .catch((err) => {
+      // Handle any errors that occurred during the update process
+      console.error('Error updating user:', err);
+      res
+        .status(500)
+        .json({ error: 'An error occurred while updating selected columns' });
+    });
 };
 //Update user
 const UpdateUser = async (req, res) => {
@@ -112,7 +120,7 @@ const loginHandler = async (req, res) => {
     if (!isValid) {
       res.status(404).json(errors);
     } else {
-      UserModel.findOne({ email: req.body.email }).then((user) => {
+      Users.findOne({ email: req.body.email }).then((user) => {
         if (!user) {
           errors.email = 'not found user';
           res.status(404).json(errors);
@@ -129,10 +137,12 @@ const loginHandler = async (req, res) => {
                   firstname: user.firstname,
                   email: user.email,
                   phone: user.phone,
+                  selectedColumns: user.selectedColumns,
                 },
-                process.env.PRIVATE_KEY,
-                { expiresIn: '6s' }
+                process.env.PRIVATE_KEY
+                // { expiresIn: '6s' }
               );
+
               res.status(200).json({
                 message: 'success',
                 token: 'Bearer ' + token,
@@ -164,11 +174,7 @@ const createAdmin = async () => {
     const update = { $set: adminData };
     const options = { upsert: true, new: true };
 
-    const updatedAdmin = await UserModel.findOneAndUpdate(
-      filter,
-      update,
-      options
-    );
+    const updatedAdmin = await Users.findOneAndUpdate(filter, update, options);
 
     if (updatedAdmin) {
       console.log('Admin user created/updated successfully');
@@ -189,7 +195,7 @@ module.exports = {
   DeleteUser,
   loginHandler,
   createAdmin,
-  saveColumnPreferences,
+  saveColumnsHandler,
 };
 
 /* 
